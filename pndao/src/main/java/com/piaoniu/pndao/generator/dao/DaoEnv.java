@@ -12,15 +12,24 @@ public class DaoEnv {
     private String updateTime;
     Type typeParameter;
 
-    public DaoEnv(DaoGen daoGen,Symbol.ClassSymbol classSymbol) {
+    public DaoEnv(DaoGen daoGen,Symbol.ClassSymbol classSymbol, String tablePrefix) {
         this.daoGen = daoGen;
         createTime = daoGen.createTime();
         updateTime = daoGen.updateTime();
         daoClassName = classSymbol.getSimpleName().toString();
+
+        // annotation parameter has higher priority than processor options
+        String prefix = "";
+        if (daoGen.tablePrefix() != null && !daoGen.tablePrefix().isEmpty()){
+            prefix = daoGen.tablePrefix();
+        } else if (tablePrefix != null){
+            prefix = tablePrefix;
+        }
+
         if (!daoGen.tableName().isEmpty())
-            tableName = daoGen.tablePrefix()+daoGen.tableName();
+            tableName = prefix + daoGen.tableName();
             //"Activity{Dao}"
-        else tableName = daoGen.tablePrefix()+daoClassName.subSequence(0,daoClassName.length()-3);
+        else tableName = prefix + daoClassName.subSequence(0,daoClassName.length()-3);
         if (classSymbol.getInterfaces() != null){
             classSymbol.getInterfaces().forEach(i->{
                 if (i.getTypeArguments()!=null && !i.getTypeArguments().isEmpty()){

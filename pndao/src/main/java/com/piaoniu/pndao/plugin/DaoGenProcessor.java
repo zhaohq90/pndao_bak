@@ -24,8 +24,10 @@ import java.util.stream.Collectors;
 
 @SupportedAnnotationTypes("com.piaoniu.pndao.annotations.DaoGen")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedOptions(value = DaoGenProcessor.TABLE_PREFIX)
 public class DaoGenProcessor  extends AbstractProcessor {
     public static final String PATH = DaoGen.class.getCanonicalName();
+    public static final String TABLE_PREFIX = "tablePrefix";
 
     // 工具实例类，用于将CompilerAPI, CompilerTreeAPI和AnnotationProcessing框架粘合起来
     private Trees trees;
@@ -33,6 +35,7 @@ public class DaoGenProcessor  extends AbstractProcessor {
     private Messager messager;
     private Filer filer;
     private DaoGenHelper daoGenHelper;
+    private String tablePrefix;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -40,6 +43,7 @@ public class DaoGenProcessor  extends AbstractProcessor {
         this.trees = Trees.instance(processingEnv);
         this.messager = processingEnv.getMessager();
         this.filer = processingEnv.getFiler();
+        this.tablePrefix = processingEnv.getOptions().get(TABLE_PREFIX);
         Context context = ((JavacProcessingEnvironment) processingEnv).getContext();
         daoGenHelper = new DaoGenHelper(trees,context);
     }
@@ -77,7 +81,7 @@ public class DaoGenProcessor  extends AbstractProcessor {
 
     private String genNewXml(String data, Symbol.ClassSymbol classSymbol) {
         DaoGen daoGen = classSymbol.getAnnotation(DaoGen.class);
-        DaoEnv daoEnv = new DaoEnv(daoGen,classSymbol);
+        DaoEnv daoEnv = new DaoEnv(daoGen, classSymbol, this.tablePrefix);
         Function<Symbol.MethodSymbol,MapperMethod> gen = (methodSymbol -> DaoGenHelper.toMapperMethod(daoEnv, methodSymbol));
 
         Map<String,MapperMethod> methodMap =

@@ -127,7 +127,18 @@ public interface UserDao {
 
 ## 定制
 
-1. 如果你的团队命名规范与pndao不同，可以下载源码，修改DaoGen的prefix的default值并重新编译。
+1. 如果你的团队命名规范与pndao不同
+   - 可以下载源码，修改DaoGen的prefix的default值并重新编译。
+   - 可以通过指定编译期的 `processor options` : `-AtablePrefix=PN_` 的方式修改默认表名前缀, 示例如下:
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgument>-AtablePrefix=PNTS_</compilerArgument>
+                </configuration>
+            </plugin>
+
 2. pndao基于[jsr269](https://www.jcp.org/en/jsr/detail?id=269)的注解编译生成，与lombok的原理是类似的，所以理论上可以为任意框架的生成配置型的代码。
 
 ## 反馈
