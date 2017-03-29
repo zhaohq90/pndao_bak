@@ -27,7 +27,7 @@ public @interface DaoGen {
 
     String separator() default "And";
 
-    String tablePrefix() default "PN_";
+    String tablePrefix() default "";
 
     String primaryKey() default "id";
 
