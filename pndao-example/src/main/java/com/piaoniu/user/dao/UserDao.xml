@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.piaoniu.user.dao.UserDao">
+
+    <select id="findByMobileNo" resultType="com.piaoniu.user.entity.User">
+        select `avatar`, `mobileNo`, `password`, `userName`, `updateTime`, `addTime`, `id` from PN_User where `mobileNo` = #{mobileNo} and userName is not null order by id ASC
+    </select>
+
+</mapper>

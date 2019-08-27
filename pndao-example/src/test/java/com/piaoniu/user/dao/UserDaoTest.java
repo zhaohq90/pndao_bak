@@ -2,9 +2,13 @@ package com.piaoniu.user.dao;
 
 import com.piaoniu.test.AbstractTest;
 import com.piaoniu.user.entity.User;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.RowBounds;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,16 +24,18 @@ public class UserDaoTest extends AbstractTest{
 	@Autowired
 	private UserDao userDao;
 
-	@Ignore("insert语句与h2不兼容")
+	//@Ignore("insert语句与h2不兼容")
 	@Test
 	public void testInsertUser() throws Exception {
 		User user = initUser();
+        System.out.println(user.getUserName());
 		assertThat(userDao.insert(user)).isEqualTo(1);
 	}
 
 	@Test
 	public void testFindUserById() throws Exception {
 		User user = userDao.findById(USER_ID);
+		assertThat(user.getUserName()).endsWith("用户13700000000");
 		assertThat(user).isNotNull();
 	}
 
@@ -37,6 +43,18 @@ public class UserDaoTest extends AbstractTest{
 	public void testUpdateUserName() throws Exception {
 		assertThat(userDao.updateForUserName("用户13700000001",USER_ID)).isEqualTo(1);
 	}
+
+	@Test
+	public void queryAll(){
+        List<User> list=userDao.queryAll(new RowBounds(0,3));
+        list.forEach(System.out::println);
+    }
+
+    @Test
+    public void findByMobileNo(){
+	    User user=userDao.findByMobileNo("13700000000");
+        System.out.println(user.getUserName());
+    }
 
 	private User initUser(){
 		User user = new User();
