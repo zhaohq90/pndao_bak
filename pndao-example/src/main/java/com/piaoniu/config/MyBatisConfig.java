@@ -25,7 +25,7 @@ public class MyBatisConfig {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         // 自动扫描mybatis文件
-        sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath:com/piaoniu/user/dao/*.xml"));
+        sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath:com/piaoniu/**/*.xml"));
        // sqlSessionFactoryBean.setMapperLocations(new Resource[]{new ClassPathResource("UserMapper.xml")});
         sqlSessionFactoryBean.setDataSource(dataSource);
         SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
