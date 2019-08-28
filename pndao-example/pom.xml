@@ -39,7 +39,7 @@
         <dependency>
             <groupId>com.piaoniu</groupId>
             <artifactId>pndao</artifactId>
-            <version>0.2.0</version>
+            <version>0.2.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -127,7 +127,7 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <encoding>utf-8</encoding>
-                    <compilerArgument>-AtablePrefix=PNTS_</compilerArgument>
+                    <compilerArgument>-AtablePrefix=</compilerArgument>
                 </configuration>
             </plugin>
         </plugins>
