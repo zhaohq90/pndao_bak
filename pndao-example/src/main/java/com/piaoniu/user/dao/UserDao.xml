@@ -3,7 +3,7 @@
 <mapper namespace="com.piaoniu.user.dao.UserDao">
 
     <select id="findByMobileNo" resultType="com.piaoniu.user.entity.User">
-        select `avatar`, `mobileNo`, `password`, `userName`, `updateTime`, `addTime`, `id` from PN_User where `mobileNo` = #{mobileNo} and userName is not null order by id ASC
+        select `avatar`, `mobile_no`, `password`, `user_name`, `updated_at`, `created_at`, `id` from user where `mobile_no` = #{mobileNo} and user_name is not null order by id ASC
     </select>
 
 </mapper>

@@ -21,14 +21,12 @@ import org.dom4j.io.XMLWriter;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import javax.annotation.processing.Messager;
 import javax.lang.model.element.ElementKind;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -39,10 +37,12 @@ public class DaoGenHelper {
 
     private Types types;
     private Trees trees;
+    Messager messager;
 
-    public DaoGenHelper(Trees trees, Context context) {
+    public DaoGenHelper(Trees trees, Context context, Messager messager) {
         this.trees = trees;
         this.types = Types.instance(context);
+        this.messager = messager;
     }
 
     public static Document parseText(String text) throws DocumentException, SAXException {
@@ -204,8 +204,8 @@ public class DaoGenHelper {
                                     !method.getDaoEnv().getCreateTime().equals(field)))
                                     .map((field -> {
                                         if (method.getDaoEnv().getUpdateTime().equals(field))
-                                            return "`" + field + "` = " + "now() ";
-                                        else return "`" + field + "` = " + "#{" + field + "} ";
+                                            return "`" + camelToUnderline(field) + "` = " + "now() ";
+                                        else return "`" + camelToUnderline(field) + "` = " + "#{" + field + "} ";
                                     }))
                                     .iterator()));
 
@@ -228,7 +228,7 @@ public class DaoGenHelper {
             String left = key.replaceFirst(prefix, "");
             List<String> params = split(left, daoGen.separator());
             StringBuilder select = new StringBuilder(50);
-            List<String> fields = getFields(method.getReturnType());
+            List<String> fields = getUnderlineFields(method.getReturnType());
             select.append("select ")
                     .append(Joiner.on(", ").join(fields.stream().map(f-> "`" + f + "`").iterator()))
                     .append(" from ")
@@ -337,6 +337,41 @@ public class DaoGenHelper {
             fieldsMap.put(typeStr, varSymbols.stream().filter(s->!s.isStatic()).map(Symbol.VarSymbol::toString).collect(Collectors.toList()));
         }
         return fieldsMap.get(typeStr);
+        /*return Arrays.asList(
+                "id",
+                "name",
+                "sub_name",
+                "create_at",
+                "addTime",
+                "status"
+        );*/
+    }
+
+    private List<String> getUnderlineFields(Symbol.TypeSymbol type){
+        List<String> fields=getFields(type);
+        List<String> underlineFields=Lists.newArrayList();
+
+        fields.forEach(field -> underlineFields.add(camelToUnderline(field)));
+
+        return underlineFields;
+    }
+
+    private String camelToUnderline(String param) {
+        if (param == null || "".equals(param.trim())) {
+            return "";
+        }
+        int len = param.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char c = param.charAt(i);
+            if (Character.isUpperCase(c) && i > 0) {
+                sb.append("_");
+                sb.append(Character.toLowerCase(c));
+            } else {
+                sb.append(Character.toLowerCase(c));
+            }
+        }
+        return sb.toString();
     }
 
     private String lowerFirst(String word) {
@@ -407,7 +442,7 @@ public class DaoGenHelper {
             List<String> params = split(left, daoGen.separator());
             validator.accept(params);
             StringBuilder select = new StringBuilder(50);
-            List<String> fields = getFields(method.getReturnType());
+            List<String> fields = getUnderlineFields(method.getReturnType());
             select.append("select ")
                     .append(Joiner.on(", ").join(fields.stream().map(f-> "`" + f + "`").iterator()))
                     .append(" from ")
@@ -441,7 +476,7 @@ public class DaoGenHelper {
 
     private Consumer<String> addUpdate(DaoGen daoGen, String key, MapperMethod method, Element root) {
         return (prefix) -> {
-            Element sql = root.addElement("update");
+            Element sql = root.addElement("update ");
             sql.addComment(COMMENT);
             sql.addAttribute("id", key);
 
@@ -468,9 +503,9 @@ public class DaoGenHelper {
                                     && !method.getDaoEnv().getCreateTime().equals(field)))
                                     .map((field -> {
                                         if (method.getDaoEnv().getUpdateTime().equals(field))
-                                            return "`" + field + "` = " + "now() ";
+                                            return "`" + camelToUnderline(field) + "` = " + "now() ";
                                         else
-                                            return "`" + field + "` = " + "#{" + (entity != null ?
+                                            return "`" + camelToUnderline(field) + "` = " + "#{" + (entity != null ?
                                                     entity + "." :
                                                     "") + field + "} ";
                                     }))
@@ -540,7 +575,7 @@ public class DaoGenHelper {
             String pk = daoGen.primaryKey();
             List<String> fields = getFields(method.getFirstParamType());
             insertSql.append("(")
-                    .append(Joiner.on(", ").join(getInsertFieldsStream(pk, fields).map(f -> "`"+f + "`").iterator()))
+                    .append(Joiner.on(", ").join(getInsertFieldsStream(pk, fields).map(field -> "`"+ camelToUnderline(field) + "`").iterator()))
                     .append(")\n");
 
             insertSql.append("values (");

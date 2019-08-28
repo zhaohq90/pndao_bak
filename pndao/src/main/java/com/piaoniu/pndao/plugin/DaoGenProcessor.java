@@ -16,6 +16,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic;
 import javax.tools.StandardLocation;
 import java.util.Map;
 import java.util.Set;
@@ -45,7 +46,7 @@ public class DaoGenProcessor  extends AbstractProcessor {
         this.filer = processingEnv.getFiler();
         this.tablePrefix = processingEnv.getOptions().get(TABLE_PREFIX);
         Context context = ((JavacProcessingEnvironment) processingEnv).getContext();
-        daoGenHelper = new DaoGenHelper(trees,context);
+        daoGenHelper = new DaoGenHelper(trees,context,messager);
     }
 
     public void handle(Element element) {

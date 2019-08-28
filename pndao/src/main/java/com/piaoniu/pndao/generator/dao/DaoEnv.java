@@ -29,7 +29,7 @@ public class DaoEnv {
         if (!daoGen.tableName().isEmpty())
             tableName = prefix + daoGen.tableName();
             //"Activity{Dao}"
-        else tableName = prefix + daoClassName.subSequence(0,daoClassName.length()-3);
+        else tableName = prefix + daoClassName.subSequence(0,daoClassName.length()-3).toString().toLowerCase();
         if (classSymbol.getInterfaces() != null){
             classSymbol.getInterfaces().forEach(i->{
                 if (i.getTypeArguments()!=null && !i.getTypeArguments().isEmpty()){
@@ -44,10 +44,12 @@ public class DaoEnv {
         return tableName;
     }
 
+    @Deprecated
     public String getUpdateTime() {
         return updateTime;
     }
 
+    @Deprecated
     public String getCreateTime() {
         return createTime;
     }

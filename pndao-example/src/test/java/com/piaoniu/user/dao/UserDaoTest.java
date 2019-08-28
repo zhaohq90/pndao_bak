@@ -8,6 +8,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +36,7 @@ public class UserDaoTest extends AbstractTest{
 	@Test
 	public void testFindUserById() throws Exception {
 		User user = userDao.findById(USER_ID);
-		assertThat(user.getUserName()).endsWith("用户13700000000");
+		assertThat(user.getUserName()).isEqualToIgnoringCase("用户13700000000");
 		assertThat(user).isNotNull();
 	}
 
@@ -62,6 +63,9 @@ public class UserDaoTest extends AbstractTest{
 		user.setPassword("c5658357fd6d0c4a802f95cd96d83c5f");
 		user.setUserName("用户13700000000");
 		user.setMobileNo("13700000000");
+		user.setCreatedAt(new Date());
+		user.setUpdatedAt(new Date());
+
 		return user;
 	}
 }

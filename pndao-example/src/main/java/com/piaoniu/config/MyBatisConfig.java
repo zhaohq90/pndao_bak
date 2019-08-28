@@ -29,6 +29,7 @@ public class MyBatisConfig {
        // sqlSessionFactoryBean.setMapperLocations(new Resource[]{new ClassPathResource("UserMapper.xml")});
         sqlSessionFactoryBean.setDataSource(dataSource);
         SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
+        sqlSessionFactory.getConfiguration().setMapUnderscoreToCamelCase(true);
 
         return sqlSessionFactory;
     }
