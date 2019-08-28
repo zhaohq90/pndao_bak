@@ -21,5 +21,6 @@ public interface UserDao extends EntityDao<User> {
 	int updateForUserName(@Param("userName") String userName, @Param("id") int id);
 
 	User findByMobileNo(@Param("mobileNo") String mobileNo);
+    User findByUserNameOrderByIdWithDesc(@Param("userName") String userName);
 
 }

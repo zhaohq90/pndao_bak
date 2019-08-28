@@ -287,7 +287,7 @@ public class DaoGenHelper {
             cur++;
             String realParam = lowerFirst(param);
             select.append("`")
-                    .append(realParam)
+                    .append(camelToUnderline(realParam))
                     .append("`")
                     .append(" = ")
                     .append("#{")

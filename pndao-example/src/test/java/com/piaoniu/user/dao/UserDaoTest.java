@@ -53,7 +53,7 @@ public class UserDaoTest extends AbstractTest{
 
     @Test
     public void findByMobileNo(){
-	    User user=userDao.findByMobileNo("13700000000");
+	    User user=userDao.findByUserNameOrderByIdWithDesc("13700000000");
         System.out.println(user.getUserName());
     }
 
